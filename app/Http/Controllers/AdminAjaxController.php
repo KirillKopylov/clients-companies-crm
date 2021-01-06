@@ -11,21 +11,21 @@ use App\Http\Services\AdminAjaxService;
 class AdminAjaxController
 {
     private $adminAjaxService;
-    private $request;
+    private $query;
 
     public function __construct(AdminAjaxService $adminAjaxService, Request $request)
     {
         $this->adminAjaxService = $adminAjaxService;
-        $this->request = $request;
+        $this->query = (string)$request->q;
     }
 
     public function getClients(): JsonResponse
     {
-        return $this->adminAjaxService->getClients($this->request->q);
+        return $this->adminAjaxService->getClients($this->query);
     }
 
     public function getCompanies(): JsonResponse
     {
-        return $this->adminAjaxService->getCompanies($this->request->q);
+        return $this->adminAjaxService->getCompanies($this->query);
     }
 }

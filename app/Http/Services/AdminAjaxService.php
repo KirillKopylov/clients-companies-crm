@@ -20,7 +20,7 @@ class AdminAjaxService
         );
     }
 
-    public function getCompanies(string $query):JsonResponse
+    public function getCompanies(string $query): JsonResponse
     {
         return response()->json(Company::where('title', 'LIKE', "%$query%")->paginate(null, ['id', 'title as text']));
     }

@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,10 +13,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
 Route::namespace('\App\Http\Controllers')->group(function () {
     Route::get('/admin/ajax/get-clients', 'AdminAjaxController@getClients')->name('clients_ajax');
     Route::get('/admin/ajax/get-companies', 'AdminAjaxController@getCompanies')->name('companies_ajax');
+
+    Route::middleware('api.auth')->group(function () {
+        Route::get('companies', 'RestController@getCompanies');
+        Route::get('clients/{id}', 'RestController@getClients')
+            ->where('id', '[0-9]+');
+        Route::get('client_companies/{id}', 'RestController@getClientCompanies')
+            ->where('id', '[0-9]+');
+    });
 });
