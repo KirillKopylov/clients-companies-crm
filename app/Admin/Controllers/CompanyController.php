@@ -3,6 +3,7 @@
 namespace App\Admin\Controllers;
 
 use App\Models\Company;
+use App\Models\Client;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -11,25 +12,26 @@ use Encore\Admin\Show;
 class CompanyController extends AdminController
 {
     /**
-     * Title for current resource.
-     *
-     * @var string
+     * Set title for current resource.
      */
-    protected $title = 'Company';
+    public function __construct()
+    {
+        $this->title = __('admin.clients');
+    }
 
     /**
      * Make a grid builder.
      *
      * @return Grid
      */
-    protected function grid()
+    protected function grid(): Grid
     {
         $grid = new Grid(new Company());
 
-        $grid->column('id', __('Id'));
-        $grid->column('title', __('Title'));
-        $grid->column('created_at', __('Created at'));
-        $grid->column('updated_at', __('Updated at'));
+        $grid->column('id', __('admin.id'));
+        $grid->column('title', __('admin.title'));
+        $grid->column('created_at', __('admin.created_at'));
+        $grid->column('updated_at', __('admin.updated_at'));
 
         return $grid;
     }
@@ -40,14 +42,14 @@ class CompanyController extends AdminController
      * @param mixed $id
      * @return Show
      */
-    protected function detail($id)
+    protected function detail($id): Show
     {
         $show = new Show(Company::findOrFail($id));
 
-        $show->field('id', __('Id'));
-        $show->field('title', __('Title'));
-        $show->field('created_at', __('Created at'));
-        $show->field('updated_at', __('Updated at'));
+        $show->field('id', __('admin.id'));
+        $show->field('title', __('admin.title'));
+        $show->field('created_at', __('admin.created_at'));
+        $show->field('updated_at', __('admin.updated_at'));
 
         return $show;
     }
@@ -57,11 +59,14 @@ class CompanyController extends AdminController
      *
      * @return Form
      */
-    protected function form()
+    protected function form(): Form
     {
         $form = new Form(new Company());
 
-        $form->text('title', __('Title'));
+        $form->text('title', __('admin.title'));
+        $form
+            ->multipleSelect('clients', __('admin.clients'))
+            ->options(Client::all()->pluck('first_name', 'id'));
 
         return $form;
     }

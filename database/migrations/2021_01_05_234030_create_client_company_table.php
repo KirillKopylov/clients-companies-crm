@@ -14,8 +14,18 @@ class CreateClientCompanyTable extends Migration
     public function up()
     {
         Schema::create('client_company', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->unsignedBigInteger('client_id')->index();
+            $table->unsignedBigInteger('company_id')->index();
+            $table
+                ->foreign('client_id')
+                ->references('id')
+                ->on('clients')
+                ->onDelete('cascade');
+            $table
+                ->foreign('company_id')
+                ->references('id')
+                ->on('companies')
+                ->onDelete('cascade');
         });
     }
 

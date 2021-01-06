@@ -104,4 +104,10 @@ return [
     'prev'                   => 'Prev',
     'next'                   => 'Next',
     'quick_create'           => 'Quick create',
+    'id'                     => 'ID',
+    'company_name'           => 'Company Name',
+    'first_name'             => 'First Name',
+    'last_name'              => 'Last Name',
+    'clients'                => 'Clients',
+    'companies'              => 'Companies',
 ];
