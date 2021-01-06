@@ -3,7 +3,7 @@
 namespace App\Admin\Controllers;
 
 use App\Models\Client;
-use App\Models\Company;
+use App\Admin\Helpers\AdminHelper;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -11,6 +11,8 @@ use Encore\Admin\Show;
 
 class ClientController extends AdminController
 {
+    use AdminHelper;
+
     /**
      * Set title for current resource.
      */
@@ -31,8 +33,12 @@ class ClientController extends AdminController
         $grid->column('id', __('admin.id'));
         $grid->column('first_name', __('admin.first_name'));
         $grid->column('last_name', __('admin.last_name'));
-        $grid->column('created_at', __('admin.created_at'));
-        $grid->column('updated_at', __('admin.updated_at'));
+        $grid->column('created_at', __('admin.created_at'))->display(function ($createdAt) {
+            return AdminHelper::formatDate($createdAt);
+        });
+        $grid->column('updated_at', __('admin.updated_at'))->display(function ($updatedAt) {
+            return AdminHelper::formatDate($updatedAt);
+        });
 
         return $grid;
     }
@@ -50,8 +56,15 @@ class ClientController extends AdminController
         $show->field('id', __('admin.id'));
         $show->field('first_name', __('admin.first_name'));
         $show->field('last_name', __('admin.last_name'));
-        $show->field('created_at', __('admin.created_at'));
-        $show->field('updated_at', __('admin.updated_at'));
+        $show->field('companies', __('admin.companies'))->as(function ($companies) {
+            return AdminHelper::formatCompaniesDetail($companies);
+        });
+        $show->field('created_at', __('admin.created_at'))->as(function ($createdAt) {
+            return AdminHelper::formatDate($createdAt);
+        });
+        $show->field('updated_at', __('admin.updated_at'))->as(function ($updatedAt) {
+            return AdminHelper::formatDate($updatedAt);
+        });
 
         return $show;
     }
@@ -65,11 +78,22 @@ class ClientController extends AdminController
     {
         $form = new Form(new Client());
 
-        $form->text('first_name', __('admin.first_name'));
-        $form->text('last_name', __('admin.last_name'));
+        $form
+            ->text('first_name', __('admin.first_name'))
+            ->rules('required|max:50')
+            ->required();
+        $form
+            ->text('last_name', __('admin.last_name'))
+            ->rules('required|max:50')
+            ->required();
         $form
             ->multipleSelect('companies', __('admin.companies'))
-            ->options(Company::all()->pluck('title', 'id'));
+            ->options(function ($companies) {
+                if (!empty($companies)) {
+                    return AdminHelper::formatCompaniesOptions($companies);
+                }
+            })
+            ->ajax(route('companies_ajax'));
 
         return $form;
     }
